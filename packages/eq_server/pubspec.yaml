@@ -1,16 +1,21 @@
 name: eq_server
 description: Starting point for a Serverpod server.
-# version: 1.0.0
-# homepage: https://www.example.com
+
+resolution: workspace
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ^3.7.0
 
 dependencies:
   serverpod: 2.3.1
 
 dev_dependencies:
-  lints: '>=3.0.0 <6.0.0'
-  test: '^1.24.2'
+  altive_lints: ^1.19.1
+  eqmonitor_lints:
+    git:
+      url: https://github.com/YumNumm/EQMonitor
+      ref: develop
+      path: packages/eqmonitor_lints
   serverpod_test: 2.3.1
 
+  test: '^1.24.2'

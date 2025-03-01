@@ -1,24 +1,26 @@
 import 'dart:js_interop';
 
+import 'package:api/src/adapter/http_adapter.dart';
 import 'package:cf_workers/cf_workers.dart';
 import 'package:cf_workers/http.dart';
-import 'package:http/http.dart';
+import 'package:eq_server/server.dart';
 
 @JS('fetch')
 external JSPromise<JSResponse> fetch(JSString input);
 
 Future<void> main() async =>
     Workers((request, env, ctx) async {
-      final response =
-          await fetch(
-            'https://jsonplaceholder.typicode.com/todos/1'.toJS,
-          ).toDart;
-      print((await response.toDart).body);
+      final httpRequest = await request.toDart;
 
-      final environment = JSEnv(env);
-      print(environment.supabaseKey);
+      // http.Request を CloudflareHttpRequest にラップ
+      final cfRequest = CloudflareHttpRequest(httpRequest);
 
-      return Response('OK', 200).toJS;
+      // handleRequest を呼び出す
+      await handleRequest(cfRequest);
+
+      // レスポンスを取得して返す
+      final cfResponse = cfRequest.response as CloudflareHttpResponse;
+      return cfResponse.toHttpResponse().toJS;
     }).serve();
 
 extension type JSEnv(JSObject _) implements JSObject {

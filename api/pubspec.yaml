@@ -11,10 +11,10 @@ resolution: workspace
 dependencies:
   cf_workers:
     path: ../../cf_workers.dart/
+  eq_server:
+    path: ../packages/eq_server
   http: ^1.3.0
   supabase: ^2.6.3
-  dart_frog: ^1.1.0
-
 
 dev_dependencies:
   altive_lints: ^1.19.1
