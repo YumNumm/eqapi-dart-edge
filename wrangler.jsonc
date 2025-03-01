@@ -1,0 +1,25 @@
+{
+  "name": "eqapi-dart-edge",
+  "compatibility_date": "2025-03-01",
+  "main": "src/index.ts",
+  "rules": [
+    {
+      "type": "CompiledWasm",
+      "globs": [
+        "**/*.wasm"
+      ],
+      "fallthrough": true
+    }
+  ],
+  "placement": {
+    "mode": "smart"
+  },
+  "build": {
+    "command": "fvm dart compile wasm ./lib/main.dart -o ../build/main.wasm",
+    "cwd": "api",
+    "watch_dir": [
+      "api",
+      "src"
+    ]
+  }
+}

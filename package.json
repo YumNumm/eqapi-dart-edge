@@ -3,5 +3,12 @@
   "private": true,
   "license": "MIT",
   "packageManager": "pnpm@10.5.2",
-  "scripts": {}
+  "scripts": {
+    "dev": "wrangler dev src/index.ts --port 8787",
+    "deploy": "wrangler deploy --minify src/index.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "wrangler": "^3.111.0"
+  }
 }
