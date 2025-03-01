@@ -1,5 +1,6 @@
 name: eqapi_dart_edge_workspace
 workspace:
+  - api
   - packages/_base
   # <ADD_PACKAGE_HERE>
 
