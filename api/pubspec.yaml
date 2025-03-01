@@ -8,6 +8,14 @@ environment:
 
 resolution: workspace
 
+dependencies:
+  cf_workers:
+    path: ../../cf_workers.dart/
+  http: ^1.3.0
+  supabase: ^2.6.3
+  dart_frog: ^1.1.0
+
+
 dev_dependencies:
   altive_lints: ^1.19.1
   eqmonitor_lints:
@@ -15,5 +23,3 @@ dev_dependencies:
       url: https://github.com/YumNumm/EQMonitor
       ref: develop
       path: packages/eqmonitor_lints
-dependencies:
-  cf_workers: ^1.0.0-rc.2
