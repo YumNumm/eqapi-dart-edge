@@ -1,0 +1,7 @@
+{
+  "name": "eqapi-dart-edge",
+  "private": true,
+  "license": "MIT",
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {}
+}
