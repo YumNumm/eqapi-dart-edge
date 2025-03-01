@@ -1,0 +1,24 @@
+name: eqapi_dart_edge_workspace
+workspace:
+  - packages/_base
+  # <ADD_PACKAGE_HERE>
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  melos: ^7.0.0-dev.7
+melos:
+  repository: https://github.com/YumNumm/eqapi_dart_edge
+  sdkPath: .fvm/flutter_sdk/
+  command:
+    version:
+      linkToCommit: true
+    bootstrap:
+      runPubGetInParallel: false
+      environment:
+        sdk: ^3.7.0
+        flutter: ^3.29.0
+  ide:
+    intellij:
+      enabled: false
