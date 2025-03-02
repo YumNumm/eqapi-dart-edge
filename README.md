@@ -17,6 +17,8 @@ flowchart TB
                 B[Hono.js]
                 M[JavaScript Fetch API]
                 O[WASM API]
+                Q[Promise<Response>]
+                P[globalThis.__dart_cf_workers.response]
             end
 
             subgraph "WebAssembly ランタイム"
@@ -25,7 +27,6 @@ flowchart TB
                 subgraph "Dart コード"
                     D[Shelf Router]
                     E[EarthquakeService]
-                    F[Riverpod Providers]
                 end
             end
 
@@ -33,34 +34,24 @@ flowchart TB
             B <--> C
             C --> D
             D --> E
-            E --> F
-            F --> M
+            E <-.-> |JS Interop (fetch)| M
             B --> O --> C
-            C --> H[Client Response]
+            C --> P
+            P --> Q --> H[Client Response]
         end
     end
 
-    M -.-> G[Supabase]
-    G -.-> M
-
-    I[New Request] --> J[New V8 Isolate Instance]
-
-    subgraph "Workers Runtime"
-        J --> K[WASM Instance Reuse]
-        K --> L[Riverpod Container Reuse]
-    end
+    M <-.-> |HTTP| G[Supabase]
 
     style B fill:#FFD700,stroke:#333,stroke-width:2px
     style C fill:#00A4EF,stroke:#333,stroke-width:2px
     style D fill:#00A4EF,stroke:#333,stroke-width:2px
     style E fill:#00A4EF,stroke:#333,stroke-width:2px
-    style F fill:#00A4EF,stroke:#333,stroke-width:2px
     style G fill:#3ECF8E,stroke:#333,stroke-width:2px
-    style J fill:#FF6347,stroke:#333,stroke-width:2px
-    style K fill:#FF6347,stroke:#333,stroke-width:2px
-    style L fill:#FF6347,stroke:#333,stroke-width:2px
     style M fill:#FFD700,stroke:#333,stroke-width:2px
     style O fill:#FFD700,stroke:#333,stroke-width:2px
+    style P fill:#FFD700,stroke:#333,stroke-width:2px
+    style Q fill:#FFD700,stroke:#333,stroke-width:2px
 ```
 
 ## V8 Isolateについて
@@ -72,9 +63,9 @@ Cloudflare Workersは、V8 JavaScriptエンジンのIsolateモデルを活用し
 - 高速な起動と終了が可能
 - 同時に多数のリクエストを効率的に処理
 
-このプロジェクトでは、V8 Isolate内でDart WASMインスタンスを実行し、Isolateの寿命中はWASMインスタンスとRiverpod Containerを再利用することでパフォーマンスを最適化しています。
+このプロジェクトでは、V8 Isolate内でDart WASMインスタンスを実行し、Isolateの寿命中はWASMインスタンスを再利用することでパフォーマンスを最適化しています。
 
-V8 Isolateから外部サービス（Supabase）へのアクセスは、JavaScriptのFetch APIを経由して行われます。Dart WASM内のEarthquakeServiceはJavaScript Interopを通じてFetch APIを呼び出し、外部のSupabaseサービスと通信しています。
+V8 Isolateから外部サービス（Supabase）へのアクセスは、JavaScriptのFetch APIを経由して行われます。Dart WASM内のEarthquakeServiceはJavaScript Interopを通じてFetch APIを呼び出し、外部のSupabaseサービスとHTTP通信しています。
 
 ## アーキテクチャの詳細
 
@@ -87,4 +78,16 @@ V8 Isolate内には、JavaScriptランタイムとWebAssemblyランタイムが�
 
 - JSランタイムがWASMファイルをロードし、WebAssemblyランタイムに渡す
 - Dartコードは、JavaScript Interopを通じてFetch APIなどのJavaScript機能を呼び出す
-- JSランタイムとWASMランタイム間でデータをやり取りし、クライアントへのレスポンスを生成
+- クライアントへのレスポンスは、WASM Runtime内のDartモジュールから`globalThis.__dart_cf_workers.response`を通じてJavaScriptランタイムのPromiseにresolveされる
+
+## 今後の発展性
+
+このアーキテクチャは、以下のような発展の可能性を持っています：
+
+- **Cloudflare KV連携**: Cloudflare Workersの提供するKey-Value Storeを利用することで、一時的なデータのキャッシュや状態管理の実装が可能になります。これにより、APIのパフォーマンスをさらに向上させることができます。
+- **Durable Objects**: 複数のWorkerインスタンス間で一貫した状態を維持するために、Durable Objectsを活用することができます。
+- **Edge Functions**: エッジでの計算処理をさらに最適化するためのアプローチも検討できます。
+
+いやこんな高機能かつ出来の良いコードを生み出すことができる存在がこの世にいること、本当に恐れ入ります。
+
+YumNumm( @YumNumm )へ最大限のリスペクトを込めて
