@@ -11,47 +11,38 @@ Dart WASM on Cloudflare Workersの動作検証用API
 
 ```mermaid
 flowchart TB
-    subgraph "Cloudflare Workers"
-        subgraph "V8 Isolate"
-            subgraph "JavaScript ランタイム"
-                B[Hono.js]
-                M[JavaScript Fetch API]
-                O[WASM API]
-                Q[Promise<Response>]
-                P[globalThis.__dart_cf_workers.response]
-            end
+      subgraph "V8 Isolate"
+          subgraph "JavaScript Runtime"
+              subgraph "Hono.js"
+                  M[JavaScript Fetch API]
+                  O[WASM API<br /><code>instantiate</code>]
+                  P[<code>globalThis.__dart_cf_workers.response</code>]
+              end
+          end
 
-            subgraph "WebAssembly ランタイム"
-                C[Dart WASM]
+          subgraph "WebAssembly Runtime"
+              subgraph "WebAssembly Module<br />(Dart VM)"
+                  D[Shelf Router]
+                  E[EarthquakeService]
+              end
+          end
 
-                subgraph "Dart コード"
-                    D[Shelf Router]
-                    E[EarthquakeService]
-                end
-            end
+          A[Client Request] --> O
+           O --> D
+          D --> E
+          E <-..-> |JS Interop<br /><code>fetch</code>| M
+          D --> |Response| P
+          P -->  H[Client Response]
+      end
 
-            A[Client Request] --> B
-            B <--> C
-            C --> D
-            D --> E
-            E <-.-> |JS Interop (fetch)| M
-            B --> O --> C
-            C --> P
-            P --> Q --> H[Client Response]
-        end
-    end
+    M <-..-> |HTTP| G[Supabase]
 
-    M <-.-> |HTTP| G[Supabase]
-
-    style B fill:#FFD700,stroke:#333,stroke-width:2px
-    style C fill:#00A4EF,stroke:#333,stroke-width:2px
     style D fill:#00A4EF,stroke:#333,stroke-width:2px
     style E fill:#00A4EF,stroke:#333,stroke-width:2px
     style G fill:#3ECF8E,stroke:#333,stroke-width:2px
     style M fill:#FFD700,stroke:#333,stroke-width:2px
     style O fill:#FFD700,stroke:#333,stroke-width:2px
     style P fill:#FFD700,stroke:#333,stroke-width:2px
-    style Q fill:#FFD700,stroke:#333,stroke-width:2px
 ```
 
 ## V8 Isolateについて
@@ -79,15 +70,3 @@ V8 Isolate内には、JavaScriptランタイムとWebAssemblyランタイムが�
 - JSランタイムがWASMファイルをロードし、WebAssemblyランタイムに渡す
 - Dartコードは、JavaScript Interopを通じてFetch APIなどのJavaScript機能を呼び出す
 - クライアントへのレスポンスは、WASM Runtime内のDartモジュールから`globalThis.__dart_cf_workers.response`を通じてJavaScriptランタイムのPromiseにresolveされる
-
-## 今後の発展性
-
-このアーキテクチャは、以下のような発展の可能性を持っています：
-
-- **Cloudflare KV連携**: Cloudflare Workersの提供するKey-Value Storeを利用することで、一時的なデータのキャッシュや状態管理の実装が可能になります。これにより、APIのパフォーマンスをさらに向上させることができます。
-- **Durable Objects**: 複数のWorkerインスタンス間で一貫した状態を維持するために、Durable Objectsを活用することができます。
-- **Edge Functions**: エッジでの計算処理をさらに最適化するためのアプローチも検討できます。
-
-いやこんな高機能かつ出来の良いコードを生み出すことができる存在がこの世にいること、本当に恐れ入ります。
-
-YumNumm( @YumNumm )へ最大限のリスペクトを込めて
