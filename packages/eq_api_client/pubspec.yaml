@@ -18,6 +18,8 @@ dev_dependencies:
       path: packages/eqmonitor_lints
   freezed: ^3.0.2
   json_serializable: ^6.9.4
+  retrofit_generator: ^9.1.9
 dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
+  retrofit: ^4.4.2
