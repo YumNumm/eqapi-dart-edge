@@ -8,8 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
-ProviderContainer get container => _container!;
+// MEMO(YumNumm): コンテナを変数に保持。WASMが破棄されるまで使いまわす
 ProviderContainer? _container;
+// MEMO(YumNumm): `_container`は`main`関数の初期で初期化されるため
+// 後続処理では`null`ではないことが保証される
+ProviderContainer get container => _container!;
 
 Future<void> main() async =>
     Workers((request, env, ctx) async {
