@@ -3,33 +3,48 @@ import mod from '../build/main.wasm';
 import type {
   ExecutionContext,
   ExportedHandler,
-  Response as CFResponse,
-  Request as CFRequest,
+  Request,
 } from '@cloudflare/workers-types';
+import { Response } from '@cloudflare/workers-types';
 
-const dartInstance = await instantiate(mod);
-
-// グローバル型定義を追加
+// グローバルオブジェクトの型定義を追加
 declare global {
   var __dart_cf_workers: {
-    request: () => CFRequest;
+    request: () => Request;
     response: (response: Response) => void;
     env: () => Env;
     ctx: () => ExecutionContext;
   };
 }
 
+const dartInstance = await instantiate(mod);
+
 export default {
-  async fetch(request: CFRequest, env, ctx): Promise<CFResponse> {
-    return new Promise<CFResponse>((resolve) => {
-      globalThis.__dart_cf_workers = {
-        request: () => request,
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        response: (response: any) => resolve(response as unknown as CFResponse),
-        env: () => env,
-        ctx: () => ctx,
-      };
-      invoke(dartInstance, request);
-    });
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
+    console.log('Processing request: ', request);
+    const start = performance.now();
+    try {
+      const result = await new Promise<Response>((resolve) => {
+        globalThis.__dart_cf_workers = {
+          request: () => request,
+          response: (response: Response) => resolve(response),
+          env: () => env,
+          ctx: () => ctx,
+        };
+        invoke(dartInstance, request);
+      });
+      const end = performance.now();
+      console.log(`Time taken: ${end - start} milliseconds`);
+      return result;
+    } catch (e) {
+      console.error(e);
+      return new Response('Internal Server Error', {
+        status: 500,
+      });
+    }
   },
 } satisfies ExportedHandler<Env>;
