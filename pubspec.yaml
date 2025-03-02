@@ -2,6 +2,7 @@ name: eqapi_dart_edge_workspace
 workspace:
   - api
   - packages/_base
+  - packages/eq_api_client
   # <ADD_PACKAGE_HERE>
 
 environment:

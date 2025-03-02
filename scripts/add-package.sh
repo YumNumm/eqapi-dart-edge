@@ -61,7 +61,7 @@ with open('pubspec.yaml', 'r') as f:
     lines = f.readlines()
 for i, line in enumerate(lines):
     if '<ADD_PACKAGE_HERE>' in line:
-        lines.insert(i, '    - packages/$PACKAGE_NAME\n')
+        lines.insert(i, '  - packages/$PACKAGE_NAME\n')
         break
 with open('pubspec.yaml', 'w') as f:
     f.writelines(lines)

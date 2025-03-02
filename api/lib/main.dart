@@ -19,13 +19,13 @@ Future<void> main() async =>
 
       final result = await supabase
           .from('earthquake')
-          .select('event_id, headline, origin_time')
+          .select('*')
           .limit(1)
           .order('origin_time', ascending: false);
       return Response.bytes(
         utf8.encode(jsonEncode(result)),
         200,
-        
+
       ).toJS;
     }).serve();
 
