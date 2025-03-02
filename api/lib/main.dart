@@ -1,38 +1,70 @@
-import 'dart:convert';
-import 'dart:js_interop';
+// ignore_for_file: unreachable_from_main
 
-import 'package:api/src/util/fetch_http_client.dart';
+import 'package:api/provider/env.dart';
+import 'package:api/provider/handler.dart';
 import 'package:cf_workers/cf_workers.dart';
 import 'package:cf_workers/http.dart';
-import 'package:http/http.dart';
-import 'package:supabase/supabase.dart';
+import 'package:http/http.dart' as http;
+import 'package:riverpod/riverpod.dart';
+import 'package:shelf/shelf.dart' as shelf;
+
+ProviderContainer get container => _container!;
+ProviderContainer? _container;
 
 Future<void> main() async =>
     Workers((request, env, ctx) async {
-      final _ = await request.toDart;
-      final jsEnv = JSEnv(env);
-      final supabase = SupabaseClient(
-        jsEnv.supabaseUrl,
-        jsEnv.supabaseKey,
-        httpClient: FetchHttpClient(),
-      );
+      try {
+        final _ = await request.toDart;
+        final jsEnv = JSEnv(env);
+        _container ??= ProviderContainer(
+          overrides: [envProvider.overrideWithValue(jsEnv)],
+        );
 
-      final result = await supabase
-          .from('earthquake')
-          .select('*')
-          .limit(1)
-          .order('origin_time', ascending: false);
-      return Response.bytes(
-        utf8.encode(jsonEncode(result)),
-        200,
+        final handler = container.read(handlerProvider);
 
-      ).toJS;
+        final response = await handler(
+          convertHttpToShelfRequest(await request.toDart),
+        );
+
+        final httpResponse =
+            await convertShelfToHttpResponse(response);
+        return httpResponse.toJS;
+      } on Exception catch (e, st) {
+        print(e);
+        final shelfResponse =
+            await convertShelfToHttpResponse(
+              shelf.Response.internalServerError(
+                body: e.toString(),
+                headers: {'context': st.toString()},
+              ),
+            );
+        return shelfResponse.toJS;
+      }
     }).serve();
 
-extension type JSEnv(JSObject _) implements JSObject {
-  @JS('SUPABASE_URL')
-  external String get supabaseUrl;
+shelf.Request convertHttpToShelfRequest(
+  http.Request request,
+) {
+  return shelf.Request(
+    request.method,
+    request.url,
+    body: request.body,
+    headers: request.headers,
+  );
+}
 
-  @JS('SUPABASE_KEY')
-  external String get supabaseKey;
+Future<http.Response> convertShelfToHttpResponse(
+  shelf.Response response,
+) async {
+  final stream = response.read();
+  final bytes = await stream.fold<List<int>>(
+    <int>[],
+    (previous, element) => previous..addAll(element),
+  );
+
+  return http.Response.bytes(
+    bytes,
+    response.statusCode,
+    headers: response.headers,
+  );
 }

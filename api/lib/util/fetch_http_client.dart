@@ -39,7 +39,6 @@ class FetchHttpClient extends BaseClient {
 
       final response = await fetch(url, init.toJS).toDart;
       final dartResponse = await response.toDart;
-      print(dartResponse.headers);
 
       return StreamedResponse(
         ByteStream.fromBytes(dartResponse.bodyBytes),
@@ -53,7 +52,6 @@ class FetchHttpClient extends BaseClient {
         contentLength: dartResponse.contentLength,
       );
     } catch (e) {
-      print(e.runtimeType);
       throw ClientException(
         'FetchHttpClient error: $e',
         request.url,

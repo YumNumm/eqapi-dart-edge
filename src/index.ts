@@ -1,12 +1,5 @@
 import { instantiate, invoke } from '../build/main.mjs';
 import mod from '../build/main.wasm';
-import type {
-  ExecutionContext,
-  ExportedHandler,
-  Request,
-} from '@cloudflare/workers-types';
-import { Response } from '@cloudflare/workers-types';
-
 // グローバルオブジェクトの型定義を追加
 declare global {
   var __dart_cf_workers: {
@@ -25,7 +18,6 @@ export default {
     env: Env,
     ctx: ExecutionContext,
   ): Promise<Response> {
-    console.log('Processing request: ', request);
     const start = performance.now();
     try {
       const result = await new Promise<Response>((resolve) => {
