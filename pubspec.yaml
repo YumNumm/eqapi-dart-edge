@@ -2,9 +2,6 @@ name: eqapi_dart_edge_workspace
 workspace:
   - api
   - packages/_base
-  - packages/eq_client
-  - packages/eq_flutter
-  - packages/eq_server
   # <ADD_PACKAGE_HERE>
 
 environment:
@@ -12,22 +9,6 @@ environment:
 
 dependencies:
   melos: ^7.0.0-dev.7
-dependency_overrides:
-  serverpod:
-    path: ../../serverpod/serverpod/packages/serverpod
-  serverpod_client:
-    path: ../../serverpod/serverpod/packages/serverpod_client
-  serverpod_flutter:
-    path: ../../serverpod/serverpod/packages/serverpod_flutter
-  serverpod_serialization:
-    path: ../../serverpod/serverpod/packages/serverpod_serialization
-  serverpod_service_client:
-    path: ../../serverpod/serverpod/packages/serverpod_service_client
-  serverpod_shared:
-    path: ../../serverpod/serverpod/packages/serverpod_shared
-  serverpod_test:
-    path: ../../serverpod/serverpod/packages/serverpod_test
-
 melos:
   repository: https://github.com/YumNumm/eqapi_dart_edge
   sdkPath: .fvm/flutter_sdk/
