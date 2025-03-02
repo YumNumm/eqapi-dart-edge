@@ -43,7 +43,12 @@ class EarthquakeService {
         .from('earthquake')
         .select()
         .eq('id', id);
-    return Response.ok(data);
+    return Response.ok(
+      jsonEncode(data),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
   }
 
   Router get router => _$EarthquakeServiceRouter(this);
