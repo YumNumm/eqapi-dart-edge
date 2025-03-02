@@ -10,8 +10,14 @@ resolution: workspace
 
 dev_dependencies:
   altive_lints: ^1.19.1
+  build_runner: ^2.4.15
   eqmonitor_lints:
     git:
       url: https://github.com/YumNumm/EQMonitor
       ref: develop
       path: packages/eqmonitor_lints
+  freezed: ^3.0.2
+  json_serializable: ^6.9.4
+dependencies:
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
