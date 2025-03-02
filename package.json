@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts --port 8787",
     "deploy": "wrangler deploy --minify src/index.ts",
-		"cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250224.0",
     "wrangler": "^3.111.0"
+  },
+  "dependencies": {
+    "hono": "^4.7.2"
   }
 }

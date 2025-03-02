@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:api/main.dart';
 import 'package:api/provider/supabase.dart';
@@ -27,7 +28,12 @@ class EarthquakeService {
         .select()
         .order('event_id', ascending: false)
         .limit(limit);
-    return Response.ok(jsonEncode(list));
+    return Response.ok(
+      jsonEncode(list),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
   }
 
   @Route.get('/earthquake/id/<id>')

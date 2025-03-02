@@ -18,7 +18,7 @@
 		"enabled": true
 	},
   "build": {
-    "command": "fvm dart compile wasm ./lib/main.dart -o ../build/main.wasm -O0",
+    "command": "fvm dart compile wasm ./lib/main.dart -o ../build/main.wasm -O4",
     "cwd": "api",
     "watch_dir": [
       "api",

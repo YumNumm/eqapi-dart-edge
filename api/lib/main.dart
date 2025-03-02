@@ -14,7 +14,6 @@ ProviderContainer? _container;
 Future<void> main() async =>
     Workers((request, env, ctx) async {
       try {
-        final _ = await request.toDart;
         final jsEnv = JSEnv(env);
         _container ??= ProviderContainer(
           overrides: [envProvider.overrideWithValue(jsEnv)],
