@@ -6,7 +6,7 @@ part of 'handler.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$handlerHash() => r'3fbdb34956dc12ec5fd33c74755f32e525ee75ec';
+String _$handlerHash() => r'b6fc32917716badb1ff36a2f8a7b9f4f839e7063';
 
 /// See also [handler].
 @ProviderFor(handler)

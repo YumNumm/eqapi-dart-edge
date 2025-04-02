@@ -3,13 +3,19 @@ import 'dart:io';
 
 import 'package:api/main.dart';
 import 'package:api/provider/supabase.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 part 'earthquake.g.dart';
 
+@Riverpod(keepAlive: true)
+EarthquakeService earthquakeService(Ref ref) =>
+    EarthquakeService();
+
 class EarthquakeService {
-  @Route.get('/earthquake/list')
+  @Route.get('/list')
   Future<Response> list(Request request) async {
     final supabase = container.read(supabaseProvider);
 
@@ -28,23 +34,9 @@ class EarthquakeService {
         .select()
         .order('event_id', ascending: false)
         .limit(limit);
+    print(list);
     return Response.ok(
       jsonEncode(list),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-      },
-    );
-  }
-
-  @Route.get('/earthquake/id/<id>')
-  Future<Response> get(Request request, String id) async {
-    final supabase = container.read(supabaseProvider);
-    final data = await supabase
-        .from('earthquake')
-        .select()
-        .eq('id', id);
-    return Response.ok(
-      jsonEncode(data),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
       },

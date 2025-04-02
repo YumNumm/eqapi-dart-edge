@@ -1,3 +1,4 @@
+import 'package:api/service/api_service.dart';
 import 'package:api/service/earthquake.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -7,7 +8,7 @@ part 'handler.g.dart';
 
 @Riverpod(keepAlive: true)
 Handler handler(Ref ref) {
-  final service = EarthquakeService();
+  final service = ref.watch(apiServiceProvider);
   final router = service.router;
 
   return const Pipeline()

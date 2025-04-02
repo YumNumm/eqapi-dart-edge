@@ -1,6 +1,6 @@
 # eqapi-dart-edge: Dart と WebAssembly による Cloudflare Workers 上の地震情報 API サービス
 
-こんにちは、[YumNumm（小野上 亮太朗）](https://qiita.com/YumNumm)です。
+こんにちは、[YumNumm（Ryotaro Onoue）](https://twitter.com/YumNumm)です。
 
 本記事では、dart-edge を使って Cloudflare Workers 上で動作する地震情報 API サービス「eqapi-dart-edge」の実装について解説します。
 

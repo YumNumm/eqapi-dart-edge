@@ -1,12 +1,16 @@
 import http from 'k6/http';
-import { sleep } from 'k6';
+import { sleep, check } from 'k6';
 
 export const options = {
   vus: 10,
-  duration: '3s',
+  duration: '5m',
 };
 
 export default function () {
-  http.get('http://localhost:8787/earthquake/list');
-  sleep(1);
+  const res = http.get(
+    "https://earthquake-edge.yumnumm.dev/earthquake/list?limit=50"
+  );
+  check(res, {
+    "is status 200": (r) => r.status === 200,
+  });
 }
