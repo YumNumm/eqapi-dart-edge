@@ -35,6 +35,7 @@ typedef ApiServiceRef = ProviderRef<ApiService>;
 Router _$ApiServiceRouter(ApiService service) {
   final router = Router();
   router.add('GET', r'/', service._getIndex);
+  router.add('GET', r'/hello', service._getHello);
   router.mount(r'/earthquake', service._earthquakeApi.call);
   return router;
 }

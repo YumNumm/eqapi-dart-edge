@@ -32,6 +32,11 @@ class ApiService {
     return Response.ok(stringBuffer.toString());
   }
 
+  @Route.get('/hello')
+  Future<Response> _getHello(Request request) async {
+    return Response.ok('Hello, World!');
+  }
+
   @Route.mount('/earthquake')
   Router get _earthquakeApi => _earthquakeService.router;
 
