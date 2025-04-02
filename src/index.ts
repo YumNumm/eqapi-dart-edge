@@ -5,6 +5,7 @@ declare global {
   function __dart_cf_workers(): {
     request: Request;
     response: (response: Response) => void;
+    fetch: (request: Request) => Promise<Response>;
     env: Env;
     ctx: ExecutionContext;
   };
@@ -26,6 +27,8 @@ export default {
         globalThis.__dart_cf_workers = () => ({
           response: (response: Response) => resolve(response),
           request: request,
+          fetch: (request: Request, requestInit?: RequestInit) =>
+            fetch(request, requestInit),
           env: env,
           ctx: ctx,
         });

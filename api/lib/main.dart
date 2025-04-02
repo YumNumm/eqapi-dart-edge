@@ -3,16 +3,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:api/interop.dart';
+import 'package:api/cf_workers_interop.dart';
+import 'package:api/fetch_api_http_client.dart';
 import 'package:api/provider/env.dart';
 import 'package:api/provider/handler.dart';
+import 'package:api/provider/supabase.dart';
 import 'package:js_interop_utils/js_interop_utils.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:web/web.dart' as web;
 
 // MEMO(YumNumm): コンテナを変数に保持。WASMが破棄されるまで使いまわす
-ProviderContainer? _container;
+late ProviderContainer? _container;
 // MEMO(YumNumm): `_container`は`main`関数の初期で初期化されるため
 // 後続処理では`null`ではないことが保証される
 ProviderContainer get container => _container!;
@@ -25,8 +27,17 @@ Future<void> main() async {
 
   try {
     final jsEnv = JSEnv(cfDartWorkers.env);
-    _container ??= ProviderContainer(
-      overrides: [envProvider.overrideWithValue(jsEnv)],
+    _container = ProviderContainer(
+      overrides: [
+        envProvider.overrideWithValue(jsEnv),
+        httpClientProvider.overrideWithValue(
+          FetchApiHttpClient(
+            // ignore: unnecessary_lambdas
+            fetch: (requestInfo, [requestInit]) =>
+                cfDartWorkers.fetch(requestInfo, requestInit),
+          ),
+        ),
+      ],
     );
 
     final handler = container.read(handlerProvider);
