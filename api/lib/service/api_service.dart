@@ -6,7 +6,10 @@ import 'package:shelf_router/shelf_router.dart';
 
 part 'api_service.g.dart';
 
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+  dependencies: [earthquakeService],
+)
 ApiService apiService(Ref ref) => ApiService(
   earthquakeService: ref.watch(earthquakeServiceProvider),
 );

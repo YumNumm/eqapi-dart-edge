@@ -6,7 +6,7 @@ part of 'api_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$apiServiceHash() => r'a080f94fd1b37c4e31d7363559fa39130be32341';
+String _$apiServiceHash() => r'c7e9158e9c62b6e50c7c078afb32e42cd5dbd6be';
 
 /// See also [apiService].
 @ProviderFor(apiService)
@@ -15,8 +15,11 @@ final apiServiceProvider = Provider<ApiService>.internal(
   name: r'apiServiceProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$apiServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[earthquakeServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    earthquakeServiceProvider,
+    ...?earthquakeServiceProvider.allTransitiveDependencies,
+  },
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')

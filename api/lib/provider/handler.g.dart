@@ -6,7 +6,7 @@ part of 'handler.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$handlerHash() => r'b6fc32917716badb1ff36a2f8a7b9f4f839e7063';
+String _$handlerHash() => r'7237edd2d32729f1ff126cf9de983e5a9a553fb9';
 
 /// See also [handler].
 @ProviderFor(handler)
@@ -15,8 +15,11 @@ final handlerProvider = Provider<Handler>.internal(
   name: r'handlerProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$handlerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[apiServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    apiServiceProvider,
+    ...?apiServiceProvider.allTransitiveDependencies,
+  },
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')

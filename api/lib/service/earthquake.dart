@@ -10,7 +10,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 part 'earthquake.g.dart';
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: true, dependencies: [])
 EarthquakeService earthquakeService(Ref ref) =>
     EarthquakeService();
 

@@ -6,7 +6,7 @@ part of 'earthquake.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$earthquakeServiceHash() => r'a4e685f51dc742f6fdb7002d45207bfe453b611a';
+String _$earthquakeServiceHash() => r'ec509f977525bd0c8aafc937406a4c2916a23144';
 
 /// See also [earthquakeService].
 @ProviderFor(earthquakeService)
@@ -17,8 +17,8 @@ final earthquakeServiceProvider = Provider<EarthquakeService>.internal(
       const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$earthquakeServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
