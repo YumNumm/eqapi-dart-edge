@@ -68,11 +68,13 @@ Future<void> main() async {
     return;
   } on Exception catch (e, st) {
     print(e);
+    String mask(String s) =>
+        s.replaceAll(RegExp('https?://[^ ]+'), '[MASKED]');
     cfDartWorkers.response(
       web.Response(
         jsonEncode({
-          'error': e.toString(),
-          'stackTrace': st.toString(),
+          'error': mask(e.toString()),
+          'stackTrace': mask(st.toString()),
         }).toJS,
         web.ResponseInit(status: 500),
       ),
